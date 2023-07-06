@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "target": "ES2020",
+    "module": "NodeNext",
+    "outDir": "./lib",
+    "rootDir": "./",
+    "sourceMap": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./lib/.tsbuildinfo",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+  }
+}
