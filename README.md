@@ -1,4 +1,4 @@
-# A Teams Bot project for Conversational Retrieval QA
+# azure-dataplane-sdk-helper
 
 This project leverages [Teams Bot Framework](https://github.com/OfficeDev/TeamsFx/wiki/Respond-to-chat-commands-in-Teams#How-to-create-a-command-response-bot) and [langchain typescript](https://js.langchain.com/docs/).
 It uses langchain's [ConversationalRetrievalQA](https://js.langchain.com/docs/modules/chains/index_related_chains/conversational_retrieval) to load documents into vector store for future retrieval and also deals with chat history.
