@@ -20,8 +20,8 @@ It uses langchain's [ConversationalRetrievalQA](https://js.langchain.com/docs/mo
 
 ### Debug locally using Visual Studio Code
 
-1. Fill in necessary configs in env/.env.local and env/.env.local.user
-2. In Debug tag, choose Debug(Edge) and start debugging
+1. Fill in necessary configs in `env/.env.local` and `env/.env.local.user`
+2. In Debug tag, choose `Debug(Edge)` and start debugging
 3. On Edge popup, select `Add` to add the bot to Teams.
 4. Start conversation with the Bot.
 

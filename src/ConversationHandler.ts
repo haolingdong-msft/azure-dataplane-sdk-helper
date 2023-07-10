@@ -50,7 +50,7 @@ export class ConversationHandler implements TeamsFxBotCommandHandler {
             inputKey: "question", // The key for the input to the chain
             outputKey: "text", // The key for the final conversational output of the chain
           }),
-          verbose: true
+          verbose: true // display internal logs inside the chain
         },
       );
     }
