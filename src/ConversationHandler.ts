@@ -14,7 +14,6 @@ const { ConversationalRetrievalQAChain } = require("langchain/chains");
 
 export class ConversationHandler implements TeamsFxBotCommandHandler {
   triggerPatterns: TriggerPatterns = ".*";
-  chat = new OpenAI({ maxTokens: 256 })
   chain;
 
   async handleCommandReceived(
@@ -29,7 +28,7 @@ export class ConversationHandler implements TeamsFxBotCommandHandler {
     };
 
     if(!this.chain) {
-
+      const chat = new OpenAI({ maxTokens: 256 })
       const embeddings = new OpenAIEmbeddings({
         azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME,
         modelName: process.env.AZURE_OPENAI_EMBEDDING_MODEL_NAME,
@@ -41,7 +40,7 @@ export class ConversationHandler implements TeamsFxBotCommandHandler {
       /* Create the vectorstore */
       const vectorStore = await HNSWLib.fromDocuments(docs, embeddings);
       this.chain = ConversationalRetrievalQAChain.fromLLM(
-        this.chat,
+        chat,
         vectorStore.asRetriever(),
         {
           returnSourceDocuments: false,
@@ -50,7 +49,7 @@ export class ConversationHandler implements TeamsFxBotCommandHandler {
             inputKey: "question", // The key for the input to the chain
             outputKey: "text", // The key for the final conversational output of the chain
           }),
-          verbose: true // display internal logs inside the chain
+          verbose: true // display internal logs inside the chains
         },
       );
     }
