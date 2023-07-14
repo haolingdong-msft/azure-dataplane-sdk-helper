@@ -1,4 +1,7 @@
-import { ConversationHandler } from "../ConversationHandler";
+import { DotNetConversationHandler } from "../conversationHandlers/DotNetConversationHandler";
+import { JavaScriptConversationHandler } from "../conversationHandlers/JavaScriptConversationHandler";
+import { JavaConversationHandler } from "../conversationHandlers/JavaConversationHandler";
+
 import { BotBuilderCloudAdapter } from "@microsoft/teamsfx";
 import ConversationBot = BotBuilderCloudAdapter.ConversationBot;
 import config from "./config";
@@ -16,6 +19,6 @@ export const commandApp = new ConversationBot({
   },
   command: {
     enabled: true,
-    commands: [new ConversationHandler()],
+    commands: [new DotNetConversationHandler(), new JavaScriptConversationHandler(), new JavaConversationHandler()],
   },
 });

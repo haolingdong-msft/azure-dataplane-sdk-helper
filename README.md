@@ -24,7 +24,7 @@ It uses langchain's [ConversationalRetrievalQA](https://js.langchain.com/docs/mo
     1. .env.local contains configs that can be pushed to remote git repository
     2. .env.local.user contains sensitive configs that can be pushed to remote git repository, e.g. api keys, passwords, secrets, etc
 2. `docs` contains documents that need to be loaded into vector store
-3. `ConversationHander.ts` is the main logic for handling chats, vector stores and OpenAI calls
+3. Conversation handlers under `src/conversationHandlers`(e.g. `DotNetConversationHandler`) is the main logic for handling chats, vector stores and OpenAI calls
 
 ## Additional information and references
 

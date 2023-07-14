@@ -12,8 +12,8 @@ const { HNSWLib } = require("langchain/vectorstores/hnswlib");
 import * as fs from "fs";
 const { ConversationalRetrievalQAChain } = require("langchain/chains");
 
-export class ConversationHandler implements TeamsFxBotCommandHandler {
-  triggerPatterns: TriggerPatterns = ".*";
+export class JavaConversationHandler implements TeamsFxBotCommandHandler {
+  triggerPatterns: TriggerPatterns = "^java: .*";
   chain;
 
   async handleCommandReceived(
@@ -21,7 +21,9 @@ export class ConversationHandler implements TeamsFxBotCommandHandler {
     message: CommandMessage
   ): Promise<string | Partial<Activity> | void> {
 
-    console.log(`App received message: ${message.text}`);
+    console.log(`[JavaConversationHandler]App received message: ${message.text}`);
+    const question = message.text.substring(this.triggerPatterns.toString().length - " .*".length);
+    console.log(`[JavaConversationHandler]extracted question: "${question}"`);
 
     const msg: Partial<Activity> = {
       type: ActivityTypes.Message,
@@ -56,7 +58,7 @@ export class ConversationHandler implements TeamsFxBotCommandHandler {
 
     const caller = await TeamsInfo.getMember(context, context.activity.from.id);
 
-    const text = await this.chain.call({question: message.text})
+    const text = await this.chain.call({question: question})
     console.log(text)
 
     msg.text = "@" + caller.name + " " + text.text
