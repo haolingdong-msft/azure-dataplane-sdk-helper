@@ -9,11 +9,11 @@ It uses langchain's [ConversationalRetrievalQA](https://js.langchain.com/docs/mo
 
 * [Teams Toolkit Visual Studio Code Extension](https://aka.ms/teams-toolkit) version 5.0.0 and higher or [TeamsFx CLI](https://aka.ms/teamsfx-cli)
 * [nodejs >=16](https://nodejs.org/en)
-* [Visual Studio Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools) for node-gyp if running on Windows.
+* [Visual Studio Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools) for node-gyp if running on Windows. Install 'Desktop development with C++'.
 
 ### Run(debug) locally with Visual Studio Code
 
-1. Fill in necessary configs in `env/.env.local` and `env/.env.local.user`.
+1. Fill in necessary configs in `env/.env.local` and `env/.env.local.user`. You can leave 'Bot-related paramters' as empty, the pipeline will create new teams app id for you.
 2. In Debug tag, choose `Debug(Edge)` and start debugging.
 3. On Edge popup, select `Add` to add the bot to Teams.
 4. Start conversation with the Bot.
