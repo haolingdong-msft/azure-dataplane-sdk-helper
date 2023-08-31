@@ -19,6 +19,6 @@ export const commandApp = new ConversationBot({
   },
   command: {
     enabled: true,
-    commands: [new DotNetConversationHandler(), new JavaScriptConversationHandler(), new JavaConversationHandler()],
+    commands: [new JavaScriptConversationHandler()],
   },
 });

@@ -13,7 +13,7 @@ import * as fs from "fs";
 const { ConversationalRetrievalQAChain } = require("langchain/chains");
 
 export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
-  triggerPatterns: TriggerPatterns = "^javascript: .*";
+  triggerPatterns: TriggerPatterns = ".*";
   chain;
 
   async handleCommandReceived(
