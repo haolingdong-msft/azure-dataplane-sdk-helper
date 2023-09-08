@@ -3,6 +3,21 @@
 This project leverages [Teams Bot Framework](https://github.com/OfficeDev/TeamsFx/wiki/Respond-to-chat-commands-in-Teams#How-to-create-a-command-response-bot) and [langchain typescript](https://js.langchain.com/docs/).
 It uses langchain's [ConversationalRetrievalQA](https://js.langchain.com/docs/modules/chains/index_related_chains/conversational_retrieval) to load documents into vector store for future retrieval and also deals with chat history.
 
+## Project Background:
+
+Currently, when working on sdk generation, the service team needs to set up the development and test environment locally, then do the generation, code customization, testing etc. Especially when they work on multiple languages, they will meet more environment and generation issues. When they encounter issues, they need to send emails and ask sdk team members. Once they complete the generation and create pr, we also need to do multiple rounds of code review. 
+
+To make the process more efficient, we want to reduce service team and sdk team's efforts on the code generation, environment set up, testing, information retrieval and code review. We want to leverage CodeSpace and ChatGpt to 
+
+Have a chatbot to let them ask questions related with sdk generation.
+Generate code automatically and provide CodeSpace link and pr link. 
+Let service team view, customize generated code and run tests in CodeSpace directly without setting up environment locally.
+Do first round code review.
+
+We will start with data-plane code generation, later can also apply to mgmt plane. 
+
+We prefer to deliver a VS code extension in the future.
+
 ## Quick start
 
 ### Prerequisites
