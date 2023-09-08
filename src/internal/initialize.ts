@@ -1,10 +1,8 @@
-import { DotNetConversationHandler } from "../conversationHandlers/DotNetConversationHandler";
 import { JavaScriptConversationHandler } from "../conversationHandlers/JavaScriptConversationHandler";
-import { JavaConversationHandler } from "../conversationHandlers/JavaConversationHandler";
 
 import { BotBuilderCloudAdapter } from "@microsoft/teamsfx";
-import ConversationBot = BotBuilderCloudAdapter.ConversationBot;
 import config from "./config";
+import ConversationBot = BotBuilderCloudAdapter.ConversationBot;
 
 // Create the command bot and register the command handlers for your app.
 // You can also use the commandApp.command.registerCommands to register other commands

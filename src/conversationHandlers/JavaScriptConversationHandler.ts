@@ -10,6 +10,7 @@ import {
 } from 'botframework-schema';
 const { HNSWLib } = require("langchain/vectorstores/hnswlib");
 import * as fs from "fs";
+import { CodeReviewHelper } from "../utils/CodeReviewHelper";
 const { ConversationalRetrievalQAChain } = require("langchain/chains");
 
 export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
@@ -60,6 +61,9 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
 
     const text = await this.chain.call({question: message.text})
     console.log(text)
+
+    let helper = new CodeReviewHelper();
+    helper.run();
 
     msg.text = "@" + caller.name + " " + text.text
     return msg
