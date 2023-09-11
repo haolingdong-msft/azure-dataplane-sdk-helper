@@ -4,6 +4,8 @@ import { BotBuilderCloudAdapter } from "@microsoft/teamsfx";
 import config from "./config";
 import ConversationBot = BotBuilderCloudAdapter.ConversationBot;
 const { OpenAI } = require("langchain/llms/openai");
+const { ChatOpenAI } = require("langchain/chat_models/openai");
+
 
 // Create the command bot and register the command handlers for your app.
 // You can also use the commandApp.command.registerCommands to register other commands
@@ -22,7 +24,8 @@ export const commandApp = new ConversationBot({
   },
 });
 
-export const openAI = new OpenAI({
+export const chat = new ChatOpenAI({
   temperature: 0,
-  azureOpenAIBasePath: "https://westeurope.api.cognitive.microsoft.com/openai/deployments"
+  azureOpenAIBasePath: "https://westeurope.api.cognitive.microsoft.com/openai/deployments",
+  max_tokens: 1024
 });
