@@ -4,7 +4,6 @@ import { BotBuilderCloudAdapter } from "@microsoft/teamsfx";
 import config from "./config";
 import ConversationBot = BotBuilderCloudAdapter.ConversationBot;
 const { OpenAI } = require("langchain/llms/openai");
-import { OpenAI } from "langchain/llms/openai";
 
 // Create the command bot and register the command handlers for your app.
 // You can also use the commandApp.command.registerCommands to register other commands
