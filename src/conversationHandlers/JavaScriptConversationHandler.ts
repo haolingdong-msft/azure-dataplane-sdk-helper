@@ -1,21 +1,16 @@
 import { Activity, TurnContext, TeamsInfo } from "botbuilder";
 import { CommandMessage, TeamsFxBotCommandHandler, TriggerPatterns } from "@microsoft/teamsfx";
-const { OpenAI } = require("langchain/llms/openai");
-const { OpenAIEmbeddings } = require("langchain/embeddings/openai");
-const { RecursiveCharacterTextSplitter } = require("langchain/text_splitter");
-const { BufferMemory } = require("langchain/memory");
+import { openAI } from "../internal/initialize";
 
 import {
   ActivityTypes,
 } from 'botframework-schema';
-const { HNSWLib } = require("langchain/vectorstores/hnswlib");
-import * as fs from "fs";
-import { CodeReviewHelper } from "../utils/CodeReviewHelper";
-const { ConversationalRetrievalQAChain } = require("langchain/chains");
+import {FixedLengthList} from "../utils/FixedLengthList";
+const { HumanMessage, SystemMessage, AIChatMessage } = require("langchain/schema");
 
 export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
   triggerPatterns: TriggerPatterns = ".*";
-  chain;
+  memory = new FixedLengthList(100);
 
   async handleCommandReceived(
     context: TurnContext,
@@ -23,49 +18,46 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
   ): Promise<string | Partial<Activity> | void> {
 
     console.log(`[JavaScriptConversationHandler]App received message: ${message.text}`);
-    const question = message.text.substring(this.triggerPatterns.toString().length - " .*".length);
-    console.log(`[JavaScriptConversationHandler]extracted question: "${question}"`);
 
     const msg: Partial<Activity> = {
       type: ActivityTypes.Message,
     };
 
-    if(!this.chain) {
-      const chat = new OpenAI({ maxTokens: 256 })
-      const embeddings = new OpenAIEmbeddings({
-        azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_EMBEDDING_DEPLOYMENT_NAME,
-        modelName: process.env.AZURE_OPENAI_EMBEDDING_MODEL_NAME,
-      });
-      const content = fs.readFileSync("docs/docs.txt", "utf8");
-
-      const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
-      const docs = await textSplitter.createDocuments([content]);
-      /* Create the vectorstore */
-      const vectorStore = await HNSWLib.fromDocuments(docs, embeddings);
-      this.chain = ConversationalRetrievalQAChain.fromLLM(
-        chat,
-        vectorStore.asRetriever(),
-        {
-          returnSourceDocuments: false,
-          memory: new BufferMemory({
-            memoryKey: "chat_history", // Must be set to "chat_history"
-            inputKey: "question", // The key for the input to the chain
-            outputKey: "text", // The key for the final conversational output of the chain
-          }),
-          verbose: true // display internal logs inside the chains
-        },
-      );
+    if (this.memory.length() == 0) {
+      this.refreshMemory()
     }
 
-    const caller = await TeamsInfo.getMember(context, context.activity.from.id);
+    if (message.text.toLocaleLowerCase().startsWith("bye")){
+      this.refreshMemory()
+      return "Glad to help. Bye!"
+    }
 
-    const text = await this.chain.call({question: message.text})
-    console.log(text)
+    try {
+      const history = [...this.memory.getList()];
+      history.push(new HumanMessage(message.text))
+      const result = await openAI.predictMessages(history);
+      msg.text = result.text;
+      this.memory.insert(new HumanMessage(message.text));
+      this.memory.insert(new AIChatMessage(result.text));
+    } catch(e) {
+      console.log(e)
+      msg.text = "Sorry, we've encountered some internal issues. Please try again."
+    }
 
-    let helper = new CodeReviewHelper();
-    helper.run();
-
-    msg.text = "@" + caller.name + " " + text.text
     return msg
+  }
+
+  refreshMemory(): void {
+    this.memory.clear();
+    this.memory.insert(new SystemMessage("You are an Azure SDK expert that will help service customers generate SDK with their provide information. If you don't know, please ask user for clarification."+
+    "In order to generate SDK, you'll need to know which language does he/she want to generate, and a link to the swagger readme file that the SDK generator is based on. If user doesn't provide the above information, please ask him/her politely to provide. And please make sure the given link is a valid github repo link."+
+    "Once provided with both information, please return the information in below format:\n" +
+    "```\n"+
+    "{\n"+
+    " \"language\": \"{language}\",\n"+
+    " \"link\": \"{link}\""+
+    "}\n"+
+    "```\n"+
+    "(remember to add the necessary ```)"))
   }
 }
