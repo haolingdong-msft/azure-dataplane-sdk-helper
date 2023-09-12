@@ -42,8 +42,13 @@ export class GithubHelper {
      * @param pr the pr id
      * @returns 
      */
-    async getReviewIncludedFiles(prId: string): Promise<string[]> {
-        return ["https://raw.githubusercontent.com/haolingdong-msft/azure-dataplane-sdk-helper/922e97a5bcd221ec31febcee6acba7d3c3f8f8d4/env/.env.local"];
+    async getReviewIncludedFiles(prId: string): Promise<PRFile[]> {
+        return [
+            {
+                rawUrl: "https://raw.githubusercontent.com/haolingdong-msft/azure-dataplane-sdk-helper/922e97a5bcd221ec31febcee6acba7d3c3f8f8d4/env/.env.local",
+                filePath: "env/.nv.local"
+            }
+        ];
     }
 
 }
@@ -66,4 +71,9 @@ export interface CreateReviewCommentOptions {
 export interface ReviewComment {
     id: string;
     link: string;
+}
+
+export interface PRFile {
+    rawUrl: string;
+    filePath: string;
 }
