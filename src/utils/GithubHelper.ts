@@ -1,5 +1,5 @@
 export class GithubHelper {
-    static async getContextFromRawUrl(rawUrl: string) {
+    async getContextFromRawUrl(rawUrl: string) {
         const response = await fetch(rawUrl);
         if (response.ok) {
             const text = await response.text();
