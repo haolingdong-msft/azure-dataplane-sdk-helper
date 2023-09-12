@@ -55,6 +55,7 @@ export class GithubHelper {
 
 export interface CreatePrOptions {
     owner?: string;
+    base?: string;
 }
 
 export interface PullRequest {
