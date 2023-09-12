@@ -31,6 +31,7 @@ export class FixedLengthList<T> {
 
 export class FixedLengthMemory<T> {
     private internalList: FixedLengthList<T>;
+    private pr: string;
 
     constructor(maxSize: number) {
         this.internalList = new FixedLengthList(maxSize);
@@ -41,18 +42,28 @@ export class FixedLengthMemory<T> {
     }
 
     refresh(): void {
+        this.pr = null;
         this.internalList.clear();
-
         this.internalList.insert(new SystemMessage("You are an Azure SDK expert that will help service customers generate SDK with their provide information. If you don't know, please ask user for clarification."+
         "In order to generate SDK, you'll need to know which language does he/she want to generate, and a link to the swagger readme file that the SDK generator is based on. If user doesn't provide the above information, please ask him/her politely to provide. And please make sure the given link is a valid github repo link."+
         "Once provided with both information, please return the information in below format:\n" +
-        "```\n"+
-        "{\n"+
-        " \"language\": \"{language}\",\n"+
-        " \"link\": \"{link}\""+
+        "```This_is_for_classification\n" +
+        "{\n" +
+        " \"language\": \"{language}\",\n" +
+        " \"link\": \"{link}\"" +
+        " \"type\": \"generate_pr\"" +
         "}\n"+
         "```\n"+
-        "(remember to add the necessary ```)"))
+        "(remember to add the necessary ```This_is_for_classification).\n" +
+        "Afterwards, user may want to let us review their PR with the PR link we gave them. If so, please return information in below format:\n" + 
+        "```This_is_for_classification\n" +
+        "{\n" +
+        " \"type\": \"generate_pr\"" +
+        " \"pr\": \"{pr_link}\"" +
+        "}\n" +
+        "```\n" +
+        "(remember to add the necessary ```This_is_for_classification)."
+        ))
         }
 
     getAll(): T[] {
@@ -62,4 +73,31 @@ export class FixedLengthMemory<T> {
     add(element: T): void {
         this.internalList.insert(element);
     }
+
+    getPr(): string {
+        return this.pr;
+    }
+
+    setPr(pr: string) {
+        this.pr = pr;
+    }
+}
+
+export class Classifier {
+    static classifyChat(chatContent: string): ClassifyResult  {
+        
+    }
+}
+
+export class ClassifyResult {
+    type: ChatType;
+    link: string;
+    language: string;
+    pr: string;
+}
+
+export enum ChatType {
+    GENERATE_PR = "generate_pr",
+    REVIEW_PR = "review_pr",
+    NONE = "none"
 }
