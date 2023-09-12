@@ -17,8 +17,8 @@ export class GithubHelper {
      */
     async createPr(head: string, options?: CreatePrOptions): Promise<PullRequest> {
         return {
-            id: "1",
-            link: "https://github.com/haolingdong-msft/azure-dataplane-sdk-helper/compare"
+            id: "7",
+            link: "https://github.com/haolingdong-msft/azure-dataplane-sdk-helper/pull/7"
         };
     }
 
@@ -32,8 +32,8 @@ export class GithubHelper {
      */
     async createReviewComment(prId: string, filePath: string, comment: string, options?: CreateReviewCommentOptions): Promise<ReviewComment> {
         return {
-            id: "1",
-            link: "https://github.com/haolingdong-msft/azure-dataplane-sdk-helper/compare"
+            id: "r1322282884",
+            link: "https://github.com/haolingdong-msft/azure-dataplane-sdk-helper/pull/7/files#r1322282884"
         };
     }
 
@@ -43,7 +43,7 @@ export class GithubHelper {
      * @returns 
      */
     async getReviewIncludedFiles(prId: string): Promise<string[]> {
-        return ["https://mockurl"];
+        return ["https://raw.githubusercontent.com/haolingdong-msft/azure-dataplane-sdk-helper/922e97a5bcd221ec31febcee6acba7d3c3f8f8d4/env/.env.local"];
     }
 
 }
