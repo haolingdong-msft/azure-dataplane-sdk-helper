@@ -3,6 +3,8 @@ import { JavaScriptConversationHandler } from "../conversationHandlers/JavaScrip
 import { BotBuilderCloudAdapter } from "@microsoft/teamsfx";
 import config from "./config";
 import ConversationBot = BotBuilderCloudAdapter.ConversationBot;
+import { CodeReviewHelper } from "../utils/CodeReviewHelper";
+import { GithubHelper } from "../utils/GithubHelper";
 const { OpenAI } = require("langchain/llms/openai");
 const { ChatOpenAI } = require("langchain/chat_models/openai");
 
@@ -29,3 +31,7 @@ export const chat = new ChatOpenAI({
   azureOpenAIBasePath: "https://westeurope.api.cognitive.microsoft.com/openai/deployments",
   max_tokens: 1024
 });
+
+export const codeReviewHelper = new CodeReviewHelper();
+
+export const githubHelper = new GithubHelper();
