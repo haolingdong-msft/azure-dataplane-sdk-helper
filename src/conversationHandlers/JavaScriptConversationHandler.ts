@@ -7,7 +7,7 @@ import {
 } from 'botframework-schema';
 import {FixedLengthMemory, ChatType, Classifier, ClassifyResult } from "../utils/ChatHelper";
 const { HumanMessage, SystemMessage, AIChatMessage } = require("langchain/schema");
-const Git = require("nodegit")
+// const Git = require("nodegit")
 
 export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
   triggerPatterns: TriggerPatterns = ".*";
@@ -48,7 +48,7 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
           const branch = await this.generateCodeAndPush(classifyResult.language, classifyResult.link)
           const prResult = await githubHelper.createPr(branch, {})
           msg.text = "Here's the PR link we created for you: " + prResult.link
-          this.memory.setPr(classifyResult.pr)
+          this.memory.setPr(prResult)
           break
         case ChatType.REVIEW_PR:
           if (this.memory.getPr() == null) {
@@ -71,6 +71,7 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
   }
 
   async generateCodeAndPush(language: string, link: string): Promise<string> {
-    Git.Repository.open("tmp")
+    // Git.Repository.open("tmp");
+    return "branchname";
   }
 }

@@ -1,3 +1,5 @@
+import { PullRequest } from "./GithubHelper";
+
 const { SystemMessage } = require("langchain/schema");
 
 export class FixedLengthList<T> {
@@ -31,7 +33,7 @@ export class FixedLengthList<T> {
 
 export class FixedLengthMemory<T> {
     private internalList: FixedLengthList<T>;
-    private pr: string;
+    private pr: PullRequest;
 
     constructor(maxSize: number) {
         this.internalList = new FixedLengthList(maxSize);
@@ -74,18 +76,18 @@ export class FixedLengthMemory<T> {
         this.internalList.insert(element);
     }
 
-    getPr(): string {
+    getPr(): PullRequest {
         return this.pr;
     }
 
-    setPr(pr: string) {
+    setPr(pr: PullRequest) {
         this.pr = pr;
     }
 }
 
 export class Classifier {
     static classifyChat(chatContent: string): ClassifyResult  {
-        
+        return null;
     }
 }
 
@@ -93,7 +95,7 @@ export class ClassifyResult {
     type: ChatType;
     link: string;
     language: string;
-    pr: string;
+    pr: PullRequest;
 }
 
 export enum ChatType {
