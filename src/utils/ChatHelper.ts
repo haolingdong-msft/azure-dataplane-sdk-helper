@@ -87,7 +87,12 @@ export class FixedLengthMemory<T> {
 
 export class Classifier {
     static classifyChat(chatContent: string): ClassifyResult  {
-        return null;
+        // mock
+        const result = new ClassifyResult()
+        result.language = "js"
+        result.type = ChatType.GENERATE_PR
+        result.link = "https://github.com/Azure/azure-rest-api-specs/tree/main/specification/cognitiveservices/ContentSafety"
+        return result
     }
 }
 
