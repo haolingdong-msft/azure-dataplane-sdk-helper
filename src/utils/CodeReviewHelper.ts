@@ -12,12 +12,11 @@ export class CodeReviewHelper {
             let reviewIncludedFiles: PRFile[] = await githubHelper.getReviewIncludedFiles(pr.id);
             // 2. add review comments for each file
             for (let i = 0; i < reviewIncludedFiles.length; i++) {
-                const context = await githubHelper.getContextFromRawUrl(reviewIncludedFiles[i].filename, reviewIncludedFiles[i].commit_id);
+                const context = await githubHelper.getContextFromRawUrl(reviewIncludedFiles[i].rawUrl);
                 const result = await chat.call([
                     new SystemMessage(this.codeReviewSystemMessage),
                     new HumanMessage(context)
                 ]);
-                await githubHelper.createReviewComment(reviewIncludedFiles[i].pull_number, reviewIncludedFiles[i].filename, result.text, reviewIncludedFiles[i].commit_id, 1);
             }
             return "We've added some reviews to your PR. Please take a look, thanks!";
         } catch(e) {

@@ -70,6 +70,6 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
 
   async generateCodeAndPush(language: string, link: string): Promise<string> {
     // Git.Repository.open("tmp");
-    return "branchname";
+    return "sdk_dpg_contentsafety";
   }
 }
