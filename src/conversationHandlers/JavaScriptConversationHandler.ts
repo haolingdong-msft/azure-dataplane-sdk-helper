@@ -45,17 +45,16 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
       const classifyResult = Classifier.classifyChat(result.text);
       switch (classifyResult.type) {
         case ChatType.GENERATE_PR:
-          const branch = await this.generateCodeAndPush(classifyResult.language, classifyResult.link)
-          const prResult = await githubHelper.createPr(branch, {})
-          msg.text = "Here's the PR link we created for you: " + prResult.link
+          const branch = await this.generateCodeAndPush(classifyResult.language, classifyResult.link);
+          const prResult = await githubHelper.createPr(branch, null, {});
+          msg.text = "Here's the PR link we created for you: " + prResult.url;
           this.memory.setPr(prResult)
           break
         case ChatType.REVIEW_PR:
           if (this.memory.getPr() == null) {
             msg.text = "Sorry, there's no PR link available."
           } else {
-            await codeReviewHelper.run(this.memory.getPr())
-            msg.text = "We've added some reviews to your PR. Please take a look, thanks!"
+            msg.text = await codeReviewHelper.run(this.memory.getPr());
           }
           break
         case ChatType.NONE:
