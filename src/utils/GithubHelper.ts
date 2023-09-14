@@ -193,6 +193,10 @@ export interface PullRequest {
      */
     url?: string;
     diff_url?: string;
+    /**
+     * Codespaces url
+     */
+    codespaces_url: string;
 }
 
 export interface CreateReviewCommentOptions {
