@@ -15,12 +15,12 @@
         "outline": "outline.png"
     },
     "name": {
-        "short": "commandbot-local-${{TEAMSFX_ENV}}",
-        "full": "Full name for commandbot-local"
+        "short": "azure-sdk-helper",
+        "full": "Azure SDK Helper"
     },
     "description": {
-        "short": "Short description of commandbot-local",
-        "full": "Full description of commandbot-local"
+        "short": "Intelligent bot to smooth your data-plane SDK generation process.",
+        "full": "Intelligent bot to smooth your data-plane SDK generation process."
     },
     "accentColor": "#FFFFFF",
     "bots": [
