@@ -67,7 +67,13 @@ export class FixedLengthMemory<T> {
         "}\n" +
         "```This_is_for_classification\n" +
         "Remember: always double check you are returning the correct format whenever possible.\n" +
-        "For example: User: Please help review my PR. Assistant"
+        "For example: \n Assistant: Here's the PR link we created for you: https://github.com/MaryGao/azure-sdk-for-js-pr/pull/12\n Customer: Please help review my PR.\n Assistant: \n"+
+        "```This_is_for_classification\n" +
+        "{\n" +
+        " \"type\": \"review_pr\"" +
+        " \"pr\": \"https://github.com/MaryGao/azure-sdk-for-js-pr/pull/12\"" +
+        "}\n" +
+        "```This_is_for_classification"
         ))
         }
 
