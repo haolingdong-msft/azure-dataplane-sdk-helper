@@ -42,7 +42,8 @@ export class GithubHelper {
       patch_url: 'https://github.com/MaryGao/azure-sdk-for-js-pr/pull/3.patch',
       issue_url: 'https://api.github.com/repos/MaryGao/azure-sdk-for-js-pr/issues/3',
       number: 3,
-      state: 'open'
+      state: 'open',
+      codespace_url: 'https://github.com/codespaces/new/marygao/azure-sdk-for-js-pr/pull/3?resume=1'
     }
      */
     async createPr(serivceName: string, headOrBranchName: string, options: CreatePrOptions = {}): Promise<PullRequest | undefined> {
@@ -60,7 +61,11 @@ export class GithubHelper {
             })
 
             if (result.status === 201) {
-                return result.data;
+                const ret: PullRequest = {
+                    ...result.data,
+                    codespaces_url: `https://github.com/codespaces/new/${options.owner ?? this.DEFAULT_OWNER}/${this.DEFAULT_REPO}/pull/${result.data.number}?resume=1`
+                }
+                return ret;
             }
             return undefined;
         } catch (e: any) {
