@@ -5,9 +5,9 @@ export class GithubHelper {
     octokit: Octokit;
     DEFAULT_OWNER: string = "marygao";
     DEFAULT_REPO: string = "azure-sdk-for-js-pr";
-    constructor(token?: string) {
+    constructor(token: string) {
         this.octokit = new Octokit({
-            auth: token ?? "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",
+            auth: token,
         });
     }
 
@@ -194,9 +194,13 @@ export interface PullRequest {
     url?: string;
     diff_url?: string;
     /**
+     * pr url that can be visited by
+     */
+    html_url?: string;
+    /**
      * Codespaces url
      */
-    codespaces_url: string;
+    codespaces_url?: string;
 }
 
 export interface CreateReviewCommentOptions {

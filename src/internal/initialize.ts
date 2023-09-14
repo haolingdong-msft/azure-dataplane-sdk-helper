@@ -34,4 +34,4 @@ export const chat = new ChatOpenAI({
 
 export const codeReviewHelper = new CodeReviewHelper();
 
-export const githubHelper = new GithubHelper();
+export const githubHelper = new GithubHelper(config.github_pat);

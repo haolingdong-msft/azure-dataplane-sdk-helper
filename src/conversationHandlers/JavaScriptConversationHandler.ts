@@ -8,6 +8,9 @@ import {
 import {FixedLengthMemory, ChatType, Classifier, ClassifyResult } from "../utils/ChatHelper";
 const { HumanMessage, SystemMessage, AIChatMessage } = require("langchain/schema");
 
+/**
+ * Entry point of the chat bot.
+ */
 export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
   triggerPatterns: TriggerPatterns = ".*";
   memory = new FixedLengthMemory(100);
@@ -45,8 +48,9 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
       switch (classifyResult.type) {
         case ChatType.GENERATE_PR:
           const branch = await this.generateCodeAndPush(classifyResult.language, classifyResult.link);
-          const prResult = await githubHelper.createPr(branch, null, {});
-          msg.text = `Here's the PR link we created for you: ${prResult.url}. You can also use this Codespaces link to make further modifications: ${prResult.codespaces_url}.` ;
+          const prResult = await githubHelper.createPr("Content Safety", branch, {});
+          // TODO add Codespaces link
+          msg.text = `Here's the PR link we created for you: ${prResult.html_url}.` ;
           this.memory.setPr(prResult)
           break
         case ChatType.REVIEW_PR:
@@ -69,7 +73,7 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
   }
 
   async generateCodeAndPush(language: string, link: string): Promise<string> {
-    // Git.Repository.open("tmp");
+    // Mock, will use Azure Pipeline for future codegen
     return "sdk_dpg_contentsafety";
   }
 }

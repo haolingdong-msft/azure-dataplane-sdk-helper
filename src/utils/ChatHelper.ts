@@ -46,6 +46,8 @@ export class FixedLengthMemory<T> {
     refresh(): void {
         this.pr = null;
         this.internalList.clear();
+        // 1. add sample demonstration
+        // 2. split into multiple chat models
         this.internalList.insert(new SystemMessage("You are an Azure SDK expert that will help service customers generate SDK with their provide information. Customer will ask you to help generate and review PR. Always use information in chat history. If you really don't know, please ask user for clarification."+
         "There are some special scenarios that need extra formatting: generate_pr and review_pr. 1. In order to generate SDK, you'll need to know which language does he/she want to generate, and a link to the typespec directory that contains tspconfig.yaml file that the SDK generator is based on. If user doesn't provide the above information, please ask him/her politely to provide. And please make sure the given link is a valid github repo link."+
         "Once provided with both information, please return the information in below format:\n" +
@@ -57,14 +59,15 @@ export class FixedLengthMemory<T> {
         "}\n"+
         "```This_is_for_classification\n"+
         "(remember to add the necessary ```This_is_for_classification).\n" +
-        "2. If the customer asked you to review the PR, it's the link that we already created for the customer in the chat history and don't ask them to provide the PR link again. Instead, return information in below format:\n" + 
+        "2. If the customer asked you to review the PR, don't review it, instead, return information in below format:\n" + 
         "```This_is_for_classification\n" +
         "{\n" +
         " \"type\": \"review_pr\"" +
         " \"pr\": \"{pr_link}\"" +
         "}\n" +
         "```This_is_for_classification\n" +
-        "(And do remember to add the necessary ```This_is_for_classification and correct information format)."
+        "Remember: always double check you are returning the correct format whenever possible.\n" +
+        "For example: User: Please help review my PR. Assistant"
         ))
         }
 
@@ -87,16 +90,15 @@ export class FixedLengthMemory<T> {
 
 export class Classifier {
     static classifyChat(chatContent: string): ClassifyResult  {
-        const classificationRegex = /```This_is_for_classification\n({[^}]*})\n```This_is_for_classification/
+        const classificationRegex = /```This_is_for_classification\n({[^}]*})\n```This_is_for_classification/;
         let result: ClassifyResult = {
             "type": ChatType.NONE
         }
         if (classificationRegex.test(chatContent)){
-            const content = chatContent.match(classificationRegex)[1]
-            let parsed: ClassifyResult = JSON.parse(content)
-            result = parsed
+            const content = chatContent.match(classificationRegex)[1];
+            result = JSON.parse(content);
         }
-        return result
+        return result;
     }
 }
 
