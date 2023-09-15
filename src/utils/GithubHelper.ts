@@ -199,7 +199,7 @@ export interface PullRequest {
     url?: string;
     diff_url?: string;
     /**
-     * pr url that can be visited by
+     * pr url that can be visited by browser
      */
     html_url?: string;
     /**

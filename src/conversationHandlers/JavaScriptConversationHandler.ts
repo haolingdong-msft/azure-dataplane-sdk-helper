@@ -41,18 +41,23 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
     };
 
     try {
+      // get chat history, append current user chat
       const history = this.memory.getAll();
       history.push(new HumanMessage(message.text))
+      // call OpenAI chat
       const result = await chat.call(history);
+      // classify chat type
       const classifyResult = Classifier.classifyChat(result.text);
       switch (classifyResult.type) {
+        // generate pr
         case ChatType.GENERATE_PR:
           const branch = await this.generateCodeAndPush(classifyResult.language, classifyResult.link);
           const prResult = await githubHelper.createPr("Content Safety", branch, {});
           // TODO add Codespaces link
-          msg.text = `Here's the PR link we created for you: ${prResult.html_url}.` ;
+          msg.text = `Here's the PR link we created for you: ${prResult.html_url}. You can directly edit it in Codespaces: ${prResult.codespaces_url}.` ;
           this.memory.setPr(prResult)
           break
+        // review pr
         case ChatType.REVIEW_PR:
           if (this.memory.getPr() == null) {
             msg.text = "Sorry, there's no PR link available."
@@ -60,6 +65,7 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
             msg.text = await codeReviewHelper.run(this.memory.getPr());
           }
           break
+        // others
         case ChatType.NONE:
           msg.text = result.text;
       }
