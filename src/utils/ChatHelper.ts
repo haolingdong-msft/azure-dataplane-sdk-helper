@@ -50,7 +50,7 @@ export class FixedLengthMemory<T> {
         // 2. split into multiple chat models
         this.internalList.insert(new SystemMessage("You are an Azure SDK expert that will help service customers generate SDK with their provide information. First, you'll need to classify customer's request into following categories: {\n\"generate_pr\": \"The customer wants to generate SDK.\",\n\"review_pr\": \"The customer asks you to review the PR that we created for them.\",\n\"none\": \"Any other requests the customer requests or information he/she provides\"}.\n" + 
         "Next, according to the category that you identify, you will do the following:" +
-        "1. If \"generate_pr\", you'll need to know which language does he/she want to generate, and a link to the typespec directory that contains tspconfig.yaml file that the SDK generator is based on. If user doesn't provide the above information, please ask him/her politely to provide. And please make sure the given link is a valid github repo link." +
+        "1. If \"generate_pr\", you'll need to know which language does he/she want to generate, and a link to the Typespec definition, e.g. https://github.com/Azure/azure-rest-api-specs/tree/main/specification/cognitiveservices/HealthInsights. If user doesn't provide the above information, please ask him/her politely to provide." +
         "Once provided with both information, please return the information in below format:\n" +
         "```This_is_for_classification\n" +
         "{\n" +
@@ -76,7 +76,7 @@ export class FixedLengthMemory<T> {
         "}\n" +
         "```This_is_for_classification" +
         "3. If \"none\", do as you see fit.\n" + 
-        "Always classify current user's request into above three categories: \"generate_pr\", \"review_pr\" or \"none\" as mentioned above."
+        "Remember: Always classify current user's request into above three categories: \"generate_pr\", \"review_pr\" or \"none\" as mentioned above."
         ))
         }
 

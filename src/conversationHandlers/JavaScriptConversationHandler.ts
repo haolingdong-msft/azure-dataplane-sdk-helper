@@ -52,7 +52,9 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
         // generate pr
         case ChatType.GENERATE_PR:
           const branch = await this.generateCodeAndPush(classifyResult.language, classifyResult.link);
-          const prResult = await githubHelper.createPr("Content Safety", branch, {});
+          const prResult = await githubHelper.createPr("Content Safety", branch, {
+            "body": `This is auto-generated from TypeSpec repository: ${classifyResult.link}.`
+          });
           // TODO add Codespaces link
           msg.text = `Here's the PR link we created for you: ${prResult.html_url}. You can directly edit it in Codespaces: ${prResult.codespaces_url}.` ;
           this.memory.setPr(prResult)
