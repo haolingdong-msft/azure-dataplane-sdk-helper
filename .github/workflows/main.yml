@@ -3,7 +3,7 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 name: Generate Code
-run-name: Receiving Workflow {{ inputs.language }}
+run-name: Receiving Workflow ${{ inputs.language }}
 
 on:
   workflow_dispatch:
@@ -34,5 +34,5 @@ jobs:
       run: |
         echo Add other tasks to build, test, and deploy your project.
         echo See https://aka.ms/yaml
-        echo language: {{ inputs.language }}
-        echo repo link: {{ inputs.repo_link }}
+        echo language: ${{ inputs.language }}
+        echo repo link: ${{ inputs.repo_link }}
