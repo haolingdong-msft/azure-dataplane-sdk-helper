@@ -5,6 +5,8 @@ export class GithubHelper {
     octokit: Octokit;
     DEFAULT_OWNER: string = "marygao";
     DEFAULT_REPO: string = "azure-sdk-for-js-pr";
+    SDK_GENERATION_HELPER_REPO = "azure-dataplane-sdk-helper";
+    SDK_GENERATION_HELPER_OWNER = "haolingdong-msft";
     constructor(token?: string) {
         this.octokit = new Octokit({
             auth: token ?? "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",
@@ -153,6 +155,34 @@ export class GithubHelper {
 
     }
 
+    /**
+     * Run the code generation GitHub Action under haolingdong-msft/azure-dataplane-sdk-helper repo. Return whether the action is successful or not
+     * @param language 
+     * @param typespecDefinitionLink 
+     * @returns true if it triggers the action successfully, false otherwise
+     */
+    async runCodeGenerationAction(language: ProgrammingLanguage, typespecDefinitionLink: string): Promise<Boolean> {
+        try {
+            await this.octokit.rest.actions.createWorkflowDispatch({
+                owner: this.SDK_GENERATION_HELPER_OWNER,
+                repo: this.SDK_GENERATION_HELPER_REPO,
+                workflow_id: 'main.yml',
+                ref: 'main',
+                inputs: {
+                    language: language.toString(),
+                    repo_link: typespecDefinitionLink
+                },
+                headers: {
+                    'X-GitHub-Api-Version': '2022-11-28'
+                }
+            });
+            return true;
+        } catch (e) {
+            console.log(e);
+            return false
+        }
+    }
+
     filterOnlyReviewed(filename?: string) {
         if (!filename) {
             return false;
@@ -211,4 +241,12 @@ export interface PRFile {
     filename: string; // relative file path name
     commit_id?: string;
     pull_number?: number;
+}
+
+export enum ProgrammingLanguage {
+    JAVASCRIPT = "javascript",
+    JAVA = "java",
+    DOTNET = "dotnet",
+    GO = "go",
+    PYTHON = "python"
 }
