@@ -18,7 +18,8 @@ on:
           - dotnet
           - go
           - python
-      typespec_repo: 
+      repo_link:
+        description: typespec definition repo link
         required: true
  
 jobs:
@@ -32,3 +33,5 @@ jobs:
       run: |
         echo Add other tasks to build, test, and deploy your project.
         echo See https://aka.ms/yaml
+        echo language: {{ inputs.language }}
+        echo repo link: {{ inputs.repo_link }}
