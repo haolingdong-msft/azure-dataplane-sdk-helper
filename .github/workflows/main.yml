@@ -1,0 +1,37 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+name: Generate Code
+
+on:
+  workflow_dispatch:
+    inputs:
+      language:
+        type: choice
+        description: language of the code to generate
+        required: true
+        default: javascript
+        options:
+          - javascript
+          - java
+          - dotnet
+          - go
+          - python
+      repo_link:
+        description: typespec definition repo link
+        required: true
+ 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run a one-line script
+      run: echo Hello, world!
+    
+    - name: Run a multi-line script
+      run: |
+        echo Add other tasks to build, test, and deploy your project.
+        echo See https://aka.ms/yaml
+        echo language: {{ inputs.language }}
+        echo repo link: {{ inputs.repo_link }}

@@ -46,8 +46,11 @@ export class FixedLengthMemory<T> {
     refresh(): void {
         this.pr = null;
         this.internalList.clear();
-        this.internalList.insert(new SystemMessage("You are an Azure SDK expert that will help service customers generate SDK with their provide information. Customer will ask you to help generate and review PR. Always use information in chat history. If you really don't know, please ask user for clarification."+
-        "There are some special scenarios that need extra formatting: generate_pr and review_pr. 1. In order to generate SDK, you'll need to know which language does he/she want to generate, and a link to the typespec directory that contains tspconfig.yaml file that the SDK generator is based on. If user doesn't provide the above information, please ask him/her politely to provide. And please make sure the given link is a valid github repo link."+
+        // 1. add sample demonstration
+        // 2. split into multiple chat models
+        this.internalList.insert(new SystemMessage("You are an Azure SDK expert that will help service customers generate SDK with their provide information. First, you'll need to classify customer's request into following categories: {\n\"generate_pr\": \"The customer wants to generate SDK.\",\n\"review_pr\": \"The customer asks you to review the PR that we created for them.\",\n\"none\": \"Any other requests the customer requests or information he/she provides\"}.\n" + 
+        "Next, according to the category that you identify, you will do the following:" +
+        "1. If \"generate_pr\", you'll need to know which language does he/she want to generate, and a link to the Typespec definition, e.g. https://github.com/Azure/azure-rest-api-specs/tree/main/specification/cognitiveservices/HealthInsights. If user doesn't provide the above information, please ask him/her politely to provide." +
         "Once provided with both information, please return the information in below format:\n" +
         "```This_is_for_classification\n" +
         "{\n" +
@@ -57,14 +60,23 @@ export class FixedLengthMemory<T> {
         "}\n"+
         "```This_is_for_classification\n"+
         "(remember to add the necessary ```This_is_for_classification).\n" +
-        "2. If the customer asked you to review the PR, it's the link that we already created for the customer in the chat history and don't ask them to provide the PR link again. Instead, return information in below format:\n" + 
+        "2. If \"review_pr\", you don't have to review the PR yourself. Instead, just provide what you know in below format:\n" +  
         "```This_is_for_classification\n" +
         "{\n" +
         " \"type\": \"review_pr\"" +
         " \"pr\": \"{pr_link}\"" +
         "}\n" +
         "```This_is_for_classification\n" +
-        "(And do remember to add the necessary ```This_is_for_classification and correct information format)."
+        "Remember: always double check you are returning the correct format whenever possible. The {pr_link} is the one we generated for them in \"generate_pr\" step.\n" +
+        "For example: \n Assistant: Here's the PR link we created for you: https://github.com/MaryGao/azure-sdk-for-js-pr/pull/15.\n Customer: Please help review my PR.\n Assistant: \n"+
+        "```This_is_for_classification\n" +
+        "{\n" +
+        " \"type\": \"review_pr\"" +
+        " \"pr\": \"https://github.com/MaryGao/azure-sdk-for-js-pr/pull/15\"" +
+        "}\n" +
+        "```This_is_for_classification" +
+        "3. If \"none\", do as you see fit.\n" + 
+        "Remember: Always classify current user's request into above three categories: \"generate_pr\", \"review_pr\" or \"none\" as mentioned above."
         ))
         }
 
@@ -87,16 +99,15 @@ export class FixedLengthMemory<T> {
 
 export class Classifier {
     static classifyChat(chatContent: string): ClassifyResult  {
-        const classificationRegex = /```This_is_for_classification\n({[^}]*})\n```This_is_for_classification/
+        const classificationRegex = /```This_is_for_classification\n({[^}]*})\n```This_is_for_classification/;
         let result: ClassifyResult = {
             "type": ChatType.NONE
         }
         if (classificationRegex.test(chatContent)){
-            const content = chatContent.match(classificationRegex)[1]
-            let parsed: ClassifyResult = JSON.parse(content)
-            result = parsed
+            const content = chatContent.match(classificationRegex)[1];
+            result = JSON.parse(content);
         }
-        return result
+        return result;
     }
 }
 
