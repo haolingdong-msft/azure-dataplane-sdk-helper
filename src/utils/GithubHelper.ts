@@ -161,30 +161,42 @@ export class GithubHelper {
     }
 
     /**
-     * Run the code generation GitHub Action under haolingdong-msft/azure-dataplane-sdk-helper repo. Return whether the action is successful or not
+     * Run the code generation GitHub Action under haolingdong-msft/azure-dataplane-sdk-helper repo. 
      * @param language 
      * @param typespecDefinitionLink 
-     * @returns true if it triggers the action successfully, false otherwise
+     * @returns the branch name that contains the generated code.
      */
-    async runCodeGenerationAction(language: ProgrammingLanguage, typespecDefinitionLink: string): Promise<Boolean> {
+    async runCodeGenerationAction(language: ProgrammingLanguage, typespecDefinitionLink: string): Promise<GithubActionRunStatus> {
         try {
-            await this.octokit.rest.actions.createWorkflowDispatch({
+            const timestamp = new Date().getTime().toString();
+            const res = await this.octokit.rest.actions.createWorkflowDispatch({
                 owner: this.SDK_GENERATION_HELPER_OWNER,
                 repo: this.SDK_GENERATION_HELPER_REPO,
                 workflow_id: 'main.yml',
                 ref: 'main',
                 inputs: {
                     language: language.toString(),
-                    repo_link: typespecDefinitionLink
+                    repo_link: typespecDefinitionLink,
+                    timestamp: timestamp
                 },
                 headers: {
                     'X-GitHub-Api-Version': '2022-11-28'
                 }
             });
-            return true;
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            const runs = await this.getAllActionRunsForSDKGenerationAction();
+            let matchedRun = this.getSDKGenRunsByTimeStamp(timestamp, runs);
+            // fetch status every 5s
+            while (!(matchedRun.status === GithubActionRunStatus.CANCELLED.toString()
+                || matchedRun.status === GithubActionRunStatus.COMPLETE.toString()
+                || matchedRun.status === GithubActionRunStatus.SKIPPED.toString())) {
+                matchedRun = await this.getRunById(matchedRun.id);
+                await new Promise(resolve => setTimeout(resolve, 5000));
+            }
+            return matchedRun.status;
         } catch (e) {
             console.log(e);
-            return false
+            return GithubActionRunStatus.FAILURE;
         }
     }
 
@@ -204,6 +216,52 @@ export class GithubHelper {
         const parts = url.split("/");
         const indexOfRaw = parts.indexOf("raw");
         return parts[indexOfRaw + 1];
+    }
+
+    async getAllActionRunsForSDKGenerationAction() {
+        try {
+            const res = await this.octokit.rest.actions.listWorkflowRuns({
+                owner: this.SDK_GENERATION_HELPER_OWNER,
+                repo: this.SDK_GENERATION_HELPER_REPO,
+                workflow_id: 'main.yml',
+                headers: {
+                    'X-GitHub-Api-Version': '2022-11-28'
+                },
+            });
+            console.log(res);
+            return res.data.workflow_runs;
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async getRunById(id) {
+        try {
+            const res = await this.octokit.rest.actions.getWorkflowRun({
+                owner: this.SDK_GENERATION_HELPER_OWNER,
+                repo: this.SDK_GENERATION_HELPER_REPO,
+                run_id: id,
+                headers: {
+                    'X-GitHub-Api-Version': '2022-11-28'
+                },
+            });
+            console.log(res);
+            return res.data;
+
+        } catch (error) {
+
+        }
+    }
+
+    getSDKGenRunsByTimeStamp(timestamp: string, runs) {
+        let matchedRuns = runs.filter(run => {
+            return run.name.toString().includes(timestamp);
+        });
+        if (matchedRuns.length != 1) {
+            throw new Error("There should be only one run for the timestamp");
+        }
+        return matchedRuns[0];
     }
 
 }
@@ -262,4 +320,21 @@ export enum ProgrammingLanguage {
     DOTNET = "dotnet",
     GO = "go",
     PYTHON = "python"
+}
+
+export enum GithubActionRunStatus {
+    COMPLETE = "completed",
+    ACTION_REQUIRED = "action_required",
+    CANCELLED = "cancelled",
+    FAILURE = "failure",
+    NEUTRUAL = "neutral",
+    SKIPPED = "skipped",
+    STALE = "stale",
+    SUCCESS = "success",
+    TIME_OUT = "timed_out",
+    IN_PROGRESS = "in_progress",
+    QUEUED = "queued",
+    REQUESTED = "requested",
+    WAITING = "waiting",
+    PENDING = "pending"
 }

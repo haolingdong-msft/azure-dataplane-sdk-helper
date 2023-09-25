@@ -1,4 +1,4 @@
-import { PullRequest } from "./GithubHelper";
+import { ProgrammingLanguage, PullRequest } from "./GithubHelper";
 
 const { SystemMessage } = require("langchain/schema");
 
@@ -114,7 +114,7 @@ export class Classifier {
 export interface ClassifyResult {
     type: ChatType;
     link?: string;
-    language?: string;
+    language?: ProgrammingLanguage;
     pr?: PullRequest;
 }
 
