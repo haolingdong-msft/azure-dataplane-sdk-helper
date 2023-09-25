@@ -3,6 +3,7 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 name: Generate Code
+run-name: Generate Code ${{ inputs.timestamp }}
 
 on:
   workflow_dispatch:
@@ -21,6 +22,8 @@ on:
       repo_link:
         description: typespec definition repo link
         required: true
+      timestamp:
+        required: true
  
 jobs:
   build:
@@ -33,5 +36,5 @@ jobs:
       run: |
         echo Add other tasks to build, test, and deploy your project.
         echo See https://aka.ms/yaml
-        echo language: {{ inputs.language }}
-        echo repo link: {{ inputs.repo_link }}
+        echo language: ${{ inputs.language }}
+        echo repo link: ${{ inputs.repo_link }}
