@@ -5,7 +5,21 @@
 name: Generate Code
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      language:
+        type: choice
+        description: language of the code to generate
+        required: true
+        default: javascript
+        options:
+          - javascript
+          - java
+          - dotnet
+          - go
+          - python
+      typespec_repo: 
+        required: true
  
 jobs:
   build:
