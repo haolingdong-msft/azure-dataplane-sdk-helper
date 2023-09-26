@@ -44,7 +44,7 @@ jobs:
     - name: Generate code
       shell: pwsh
       run: |
-        ./eng/common/scripts/TypeSpec-Project_process.ps1 ${{ inputs.repo_link }}
+        ./eng/common/scripts/TypeSpec-Project-Process.ps1 ${{ inputs.repo_link }}
 
     - name: Commit generated code and push
       run: |
