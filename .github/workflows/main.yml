@@ -36,7 +36,10 @@ jobs:
       with: 
         repository: MaryGao/azure-sdk-for-js-pr
         token: ${{ inputs.github_pat }}
-        ref: refs/heads/tsp_${{ inputs.timestamp }}
+
+    - name: Create a new branch and checkout
+      run: |
+        git checkout -b tsp_${{ timestamp }}
     
     - name: Generate code
       shell: pwsh
