@@ -39,7 +39,7 @@ jobs:
 
     - name: Create a new branch and checkout
       run: |
-        git checkout -b tsp_${{ timestamp }}
+        git checkout -b tsp_${{ inputs.timestamp }}
     
     - name: Generate code
       shell: pwsh
