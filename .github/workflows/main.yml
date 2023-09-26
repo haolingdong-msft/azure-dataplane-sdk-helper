@@ -24,17 +24,29 @@ on:
         required: true
       timestamp:
         required: true
+      github_pat:
+        required: true
  
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Run a one-line script
-      run: echo Hello, world!
+    - name: Clone azure-sdk-for-js-pr repository
+      uses: actions/checkout@v4
+      with: 
+        repository: MaryGao/azure-sdk-for-js-pr
+        token: ${{ inputs.github_pat }}
+        ref: refs/heads/tsp_${{ inputs.timestamp }}
     
-    - name: Run a multi-line script
+    - name: Generate code
+      shell: pwsh
       run: |
-        echo Add other tasks to build, test, and deploy your project.
-        echo See https://aka.ms/yaml
-        echo language: ${{ inputs.language }}
-        echo repo link: ${{ inputs.repo_link }}
+        ./eng/common/scripts/TypeSpec-Project_process.ps1 ${{ inputs.repo_link }}
+
+    - name: Commit generated code and push
+      run: |
+        git config --global user.name 'actions-user'
+        git config --global user.email 'action@github.com'
+        git add .
+        git commit -m "generate code"
+        git push
