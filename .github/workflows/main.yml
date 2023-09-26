@@ -31,6 +31,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        path: main
     - name: Clone azure-sdk-for-js-pr repository
       uses: actions/checkout@v4
       with: 
