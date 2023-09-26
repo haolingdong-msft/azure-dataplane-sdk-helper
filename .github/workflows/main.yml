@@ -31,10 +31,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        path: main
     - name: Clone azure-sdk-for-js-pr repository
       uses: actions/checkout@v4
       with: 
@@ -44,18 +40,18 @@ jobs:
 
     - name: Create a new branch and checkout
       run: |
-        cd ../azure-sdk-for-js-pr
+        working-directory: azure-sdk-for-js-pr
         git checkout -b tsp_${{ inputs.timestamp }}
     
     - name: Generate code
       shell: pwsh
       run: |
-        cd ../azure-sdk-for-js-pr
+        working-directory: azure-sdk-for-js-pr
         ./eng/common/scripts/TypeSpec-Project-Process.ps1 ${{ inputs.repo_link }}
 
     - name: Commit generated code and push
       run: |
-        cd ../azure-sdk-for-js-pr
+        working-directory: azure-sdk-for-js-pr
         git config --global user.name 'actions-user'
         git config --global user.email 'action@github.com'
         git add .
