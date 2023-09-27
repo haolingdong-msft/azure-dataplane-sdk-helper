@@ -194,7 +194,10 @@ export class GithubHelper {
                 matchedRun = await this.getRunById(matchedRun.id);
                 await new Promise(resolve => setTimeout(resolve, 5000));
             }
-            return `tsp_${timestamp}`;
+            if (matchedRun.status === GithubActionRunStatus.COMPLETE.toString() && matchedRun.conclusion === "success") {
+                return `tsp_${timestamp}`;
+            }
+            console.log(`Code generation failed. Run status: ${matchedRun.status}, conclusion: ${matchedRun.conclusion}`);
         } catch (e) {
             console.log(e);
             return undefined;

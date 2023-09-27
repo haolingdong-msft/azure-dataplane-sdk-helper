@@ -83,6 +83,10 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
 
   async generateCode(language: ProgrammingLanguage, link: string) {
     // Mock, will use Azure Pipeline for future codegen
-    return await githubHelper.runCodeGenerationAction(language, link);
+    let branch =  await githubHelper.runCodeGenerationAction(language, link);
+    if (!branch) {
+      throw Error("Code generation failed. No branch returned.")
+    }
+    return branch;
   }
 }
