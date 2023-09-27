@@ -166,7 +166,7 @@ export class GithubHelper {
      * @param typespecDefinitionLink 
      * @returns the branch name that contains the generated code.
      */
-    async runCodeGenerationAction(language: ProgrammingLanguage, typespecDefinitionLink: string): Promise<GithubActionRunStatus> {
+    async runCodeGenerationAction(language: ProgrammingLanguage, typespecDefinitionLink: string): Promise<string> {
         try {
             const timestamp = new Date().getTime().toString();
             const res = await this.octokit.rest.actions.createWorkflowDispatch({
@@ -177,7 +177,8 @@ export class GithubHelper {
                 inputs: {
                     language: language.toString(),
                     repo_link: typespecDefinitionLink,
-                    timestamp: timestamp
+                    timestamp: timestamp,
+                    github_pat: process.env.GITHUB_PAT
                 },
                 headers: {
                     'X-GitHub-Api-Version': '2022-11-28'
@@ -193,10 +194,10 @@ export class GithubHelper {
                 matchedRun = await this.getRunById(matchedRun.id);
                 await new Promise(resolve => setTimeout(resolve, 5000));
             }
-            return matchedRun.status;
+            return `tsp_${timestamp}`;
         } catch (e) {
             console.log(e);
-            return GithubActionRunStatus.FAILURE;
+            return undefined;
         }
     }
 

@@ -1,11 +1,12 @@
-import { Activity, TurnContext } from "botbuilder";
 import { CommandMessage, TeamsFxBotCommandHandler, TriggerPatterns } from "@microsoft/teamsfx";
+import { Activity, TurnContext } from "botbuilder";
 import { chat, codeReviewHelper, githubHelper } from "../internal/initialize";
 
 import {
   ActivityTypes,
 } from 'botframework-schema';
-import {FixedLengthMemory, ChatType, Classifier, ClassifyResult } from "../utils/ChatHelper";
+import { ChatType, Classifier, FixedLengthMemory } from "../utils/ChatHelper";
+import { ProgrammingLanguage } from "../utils/GithubHelper";
 const { HumanMessage, SystemMessage, AIChatMessage } = require("langchain/schema");
 
 /**
@@ -51,7 +52,7 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
       switch (classifyResult.type) {
         // generate pr
         case ChatType.GENERATE_PR:
-          const branch = await this.generateCodeAndPush(classifyResult.language, classifyResult.link);
+          const branch = await this.generateCode(classifyResult.language, classifyResult.link);
           const prResult = await githubHelper.createPr("Content Safety", branch, {
             "body": `This is auto-generated from TypeSpec repository: ${classifyResult.link}.`
           });
@@ -80,8 +81,8 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
     return msg
   }
 
-  async generateCodeAndPush(language: string, link: string): Promise<string> {
+  async generateCode(language: ProgrammingLanguage, link: string) {
     // Mock, will use Azure Pipeline for future codegen
-    return "sdk_dpg_contentsafety";
+    return await githubHelper.runCodeGenerationAction(language, link);
   }
 }
