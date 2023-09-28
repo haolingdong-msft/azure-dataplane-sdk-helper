@@ -53,9 +53,9 @@ jobs:
         node-version: '16'
 
     - name: Setup python
-      run: |
-        apt-get install python3.8
-        apt-get install -y --upgrade python3-pip python3-setuptools
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
 
     - name: Setup Typespec
       run: |
