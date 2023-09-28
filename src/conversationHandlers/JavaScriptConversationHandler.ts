@@ -52,6 +52,7 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
       switch (classifyResult.type) {
         // generate pr
         case ChatType.GENERATE_PR:
+          classifyResult.link = "https://github.com/Azure/azure-rest-api-specs/blob/eb29c07a0f08110c932b384d5dc41241dc0b03ab/specification/cognitiveservices/ContentSafety/tspconfig.yaml";
           const branch = await this.generateCode(classifyResult.language, classifyResult.link);
           const prResult = await githubHelper.createPr("Content Safety", branch, {
             "body": `This is auto-generated from TypeSpec repository: ${classifyResult.link}.`
