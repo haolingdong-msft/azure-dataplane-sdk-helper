@@ -46,6 +46,20 @@ jobs:
       working-directory: azure-sdk-for-js-pr
       run: |
         git checkout -b tsp_${{ inputs.timestamp }}
+
+    - name: Setup node 16
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Setup python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Setup Typespec
+      run: |
+        npm install -g @typespec/compiler
     
     - name: Generate code
       working-directory: azure-sdk-for-js-pr
@@ -60,4 +74,4 @@ jobs:
         git config --global user.email 'action@github.com'
         git add .
         git commit -m "generate code"
-        git push
+        git push -u origin tsp_${{ inputs.timestamp }}
