@@ -46,6 +46,20 @@ jobs:
       working-directory: azure-sdk-for-js-pr
       run: |
         git checkout -b tsp_${{ inputs.timestamp }}
+
+    - name: Setup node 16
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Setup python
+      run: |
+        apt-get install python3.8
+        apt-get install -y --upgrade python3-pip python3-setuptools
+
+    - name: Setup Typespec
+      run: |
+        npm install -g @typespec/compiler
     
     - name: Generate code
       working-directory: azure-sdk-for-js-pr
