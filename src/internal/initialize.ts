@@ -28,7 +28,7 @@ export const commandApp = new ConversationBot({
 
 export const chat = new ChatOpenAI({
   temperature: 0,
-  azureOpenAIBasePath: "https://westeurope.api.cognitive.microsoft.com/openai/deployments",
+  // azureOpenAIBasePath: "https://westeurope.api.cognitive.microsoft.com/openai/deployments",
   max_tokens: 1024
 });
 

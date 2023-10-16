@@ -175,7 +175,7 @@ export class GithubHelper {
                 workflow_id: 'main.yml',
                 ref: 'main',
                 inputs: {
-                    language: language.toString(),
+                    language: language.toLocaleLowerCase(),
                     repo_link: typespecDefinitionLink,
                     timestamp: timestamp,
                     github_pat: process.env.GITHUB_PAT

@@ -27,7 +27,7 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
       this.memory.refresh()
     }
 
-    if (message.text.toLocaleLowerCase().startsWith("bye")){
+    if (message.text.toLocaleLowerCase().startsWith("bye")) {
       this.memory.refresh();
       return "Glad to help. Bye!"
     }
@@ -49,6 +49,7 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
       const result = await chat.call(history);
       // classify chat type
       const classifyResult = Classifier.classifyChat(result.text);
+      console.log(`[JavaScriptConversationHandler]Classifier result:`, classifyResult, result.text);
       switch (classifyResult.type) {
         // generate pr
         case ChatType.GENERATE_PR:
@@ -58,7 +59,7 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
             "body": `This is auto-generated from TypeSpec repository: ${classifyResult.link}.`
           });
           // TODO add Codespaces link
-          msg.text = `Here's the PR link we created for you: ${prResult.html_url}. You can directly edit it in Codespaces: ${prResult.codespaces_url}.` ;
+          msg.text = `Here's the PR link we created for you: ${prResult.html_url}. You can directly edit it in Codespaces: ${prResult.codespaces_url}.`;
           this.memory.setPr(prResult)
           break
         // review pr
@@ -75,7 +76,7 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
       }
       this.memory.add(new HumanMessage(message.text));
       this.memory.add(new AIChatMessage(msg.text));
-    } catch(e) {
+    } catch (e) {
       console.log(e)
       msg.text = "Sorry, we've encountered some internal issues. Please try again."
     }
@@ -84,7 +85,7 @@ export class JavaScriptConversationHandler implements TeamsFxBotCommandHandler {
 
   async generateCode(language: ProgrammingLanguage, link: string) {
     // Mock, will use Azure Pipeline for future codegen
-    let branch =  await githubHelper.runCodeGenerationAction(language, link);
+    let branch = await githubHelper.runCodeGenerationAction(language, link);
     if (!branch) {
       throw Error("Code generation failed. No branch returned.")
     }

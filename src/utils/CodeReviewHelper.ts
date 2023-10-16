@@ -1,15 +1,19 @@
 import { chat, githubHelper } from "../internal/initialize";
 import { GithubHelper, PRFile, PullRequest } from "./GithubHelper";
 
-const { HumanMessage, SystemMessage} = require("langchain/schema");
+const { HumanMessage, SystemMessage } = require("langchain/schema");
 
 
 export class CodeReviewHelper {
-    codeReviewSystemMessage = "You are an AI assistant that helps to do code review. I will give you a code snippet. You will need to give code review comments. If it is markdown file, you will need to verify if all href has corresponding link, the structure of the file, whether the description is fluent in natural language perspective, the code snippet provided in the file is correct and easy to understand. You will need to list the review comments with the code line.";
+    codeReviewSystemMessage = "You are an AI assistant that helps to do code review. I will give you a code snippet. You will need to give code review comments. Current supported review file type is markdown file. If it is markdown file, you will need to verify if all href has corresponding link (you don't need to verify if the link is broken or not), the structure of the file, whether the description is fluent and well-organized in natural language perspective, the code snippet provided in the file is well coded. You will need to list the review comments with the code line. You don't need to output items to say the file is correct, only output the items that need improvement. If it needs improvement, please also output the modify suggestions.";
     async run(pr: PullRequest) {
         try {
             // 1. get review included files
             let reviewIncludedFiles: PRFile[] = await githubHelper.getReviewIncludedFiles(pr.number);
+            await chat.call([new SystemMessage("You don't need to verify if the link is broken or not.")]);
+            // await chat.call([new SystemMessage("You don't need to validate code snippet.")]);
+            await chat.call([new SystemMessage("You don't need to output item that does not need improvement.")]);
+            await chat.call([new SystemMessage("Please output only top 5 items need to be imrpoved.")]);
             // 2. add review comments for each file
             for (let i = 0; i < reviewIncludedFiles.length; i++) {
                 const context = await githubHelper.getContextFromRawUrl(reviewIncludedFiles[i].filename, reviewIncludedFiles[i].commit_id);
@@ -21,7 +25,7 @@ export class CodeReviewHelper {
                 await githubHelper.createReviewComment(reviewIncludedFiles[i].pull_number, reviewIncludedFiles[i].filename, comment, reviewIncludedFiles[i].commit_id, 1);
             }
             return "We've added some reviews to your PR. Please take a look, thanks!";
-        } catch(e) {
+        } catch (e) {
             console.log(e);
             return "The code review process failed. Please try again."
         }

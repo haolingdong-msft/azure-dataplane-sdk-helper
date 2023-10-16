@@ -49,34 +49,34 @@ export class FixedLengthMemory<T> {
         // 1. add sample demonstration
         // 2. split into multiple chat models
         this.internalList.insert(new SystemMessage("You are an Azure SDK expert that will help service customers generate SDK with their provided information. You need to complete two types of tasks, which is : generate PR and review PR.\n" +
-        "\n" +
-        "\n" +
-        "For generate PR, you need to ask the the user politely to provide a language and a link. The language is the generated sdk's programming language. The link is the TypeSpec definition directory that contains `tspconfig.yaml`. Once provided with both information, please organize the language and link in below format and provide it to the user. " +
-        // We will use below information to generate sdk and output a pr link.\n" +
-        "```This_is_for_classification\n" +
-        "        {\n" +
-        "        \"language\": {language},\n" +
-        "        \"link\": {link}\n" +
-        "        \"type\": \"generate_pr\"\n" +
-        "        }\n" +
-        " ```This_is_for_classification\n" +
-        "\n" +
-         "The organized format must start with \"```This_is_for_classification\n\" and end with \"```This_is_for_classification\n\"\n" +
-        // "(remember to add the necessary ```This_is_for_classification).\n" +
-        "For review pr, if the user asks for pr review, then the review task starts. If at generate pr step a new pr link has been generated, replace the {pr_link} with the generated pr. If no pr link has been generated, ask the user for a pr link and replace {pr_link} with the user given pr. Return the pr link in below format:  \n" +
-        "```This_is_for_classification\n" +
-        "        {\n" +
-        "        \"type\": \"review_pr\"\n" +
-        "        \"pr\": {pr_link}\n" +
-        "        }\\n\n" +
-        "```This_is_for_classification\n" +
-        "\n" +
-        "\n" +
-        "\n" +
-        "Remember: always double check you are returning the correct format whenever possible.\n" +
-        "\n"
+            "\n" +
+            "\n" +
+            "For generate PR, you need to ask the the user politely to provide a language and a link. The language is the generated sdk's programming language. The link is the TypeSpec definition directory that contains `tspconfig.yaml`. Once provided with both information, please organize the language and link in below format and provide it to the user. " +
+            // We will use below information to generate sdk and output a pr link.\n" +
+            "```This_is_for_classification\n" +
+            "        {\n" +
+            "        \"language\": {language},\n" +
+            "        \"link\": {link}\n" +
+            "        \"type\": \"generate_pr\"\n" +
+            "        }\n" +
+            " ```This_is_for_classification\n" +
+            "\n" +
+            "The format must start with \"```This_is_for_classification\n\" and end with \"```This_is_for_classification\n\"\n" +
+            // "(remember to add the necessary ```This_is_for_classification).\n" +
+            "For review pr, if the user asks for pr review, then the review task starts. If at generate pr step a new pr link has been generated, replace the {pr_link} with the generated pr. If no pr link has been generated, ask the user for a pr link and replace {pr_link} with the user given pr. Return the pr link in below format:  \n" +
+            "```This_is_for_classification\n" +
+            "        {\n" +
+            "        \"type\": \"review_pr\"\n" +
+            "        \"pr\": {pr_link}\n" +
+            "        }\n" +
+            "```This_is_for_classification\n" +
+            "\n" +
+            "\n" +
+            "\n" +
+            "The format must start with \"```This_is_for_classification\n\" and end with \"```This_is_for_classification\n\"\nPlease also double check to ensure that you are returning the correct format.\n" +
+            "\n"
         ))
-        }
+    }
 
     getAll(): T[] {
         return [...this.internalList.getList()];
@@ -96,13 +96,15 @@ export class FixedLengthMemory<T> {
 }
 
 export class Classifier {
-    static classifyChat(chatContent: string): ClassifyResult  {
-        const classificationRegex = /```This_is_for_classification\n({[^}]*})\n```This_is_for_classification/;
-        let result: ClassifyResult = {
+    static classifyChat(chatContent: string): ClassifyResult {
+        const classificationRegex = /This_is_for_classification([\s\S]*)({([\s\S]*)})([\s\S]*)This_is_for_classification/;
+        let result = {
             "type": ChatType.NONE
         }
-        if (classificationRegex.test(chatContent)){
-            const content = chatContent.match(classificationRegex)[1];
+        if (classificationRegex.test(chatContent)) {
+            console.log("match")
+            const content = chatContent.match(classificationRegex)![2];
+            console.log(chatContent.match(classificationRegex))
             result = JSON.parse(content);
         }
         return result;
